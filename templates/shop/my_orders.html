@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}My orders | ShopEase{% endblock %}
+{% block content %}
+<div class="page-title"><p class="eyebrow">ORDER HISTORY</p><h1>My orders</h1><p class="muted">Track the orders you have placed.</p></div>
+{% for order in orders %}
+<article class="order-card"><div class="order-top"><div><strong>Order #{{ order.pk }}</strong><p class="muted">{{ order.created_at|date:"d M Y, h:i A" }}</p></div><span class="status">{{ order.get_status_display }}</span><strong>₹{{ order.total }}</strong></div><div class="order-products">{% for item in order.items.all %}<p>{{ item.product_name }} <span>× {{ item.quantity }} — ₹{{ item.price }}</span></p>{% endfor %}</div><p class="muted">Delivery to: {{ order.full_name }} · {{ order.address }}</p></article>
+{% empty %}<div class="empty-state"><h2>No orders yet</h2><p>Your placed orders will appear here.</p><a class="primary-button" href="{% url 'home' %}">Start shopping →</a></div>{% endfor %}
+{% endblock %}

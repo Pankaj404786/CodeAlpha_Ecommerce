@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}ShopEase | Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">YOUR EVERYDAY MARKETPLACE</p>
+    <h1>Find something<br><span>you’ll love.</span></h1>
+    <p class="hero-copy">Thoughtful picks for your everyday life. Browse our collection and shop with ease.</p>
+    <a class="primary-button" href="#products">Explore products <span>→</span></a>
+  </div>
+  <div class="hero-art"><div class="art-circle"></div><div class="art-card">✦<br><small>GOOD FINDS<br>START HERE</small></div></div>
+</section>
+<section id="products" class="section-heading">
+  <div><p class="eyebrow">THE COLLECTION</p><h2>Popular products</h2></div>
+  <span class="muted">{{ products|length }} products</span>
+</section>
+<div class="product-grid">
+  {% for product in products %}
+    <article class="product-card">
+      <a class="product-image" href="{% url 'product_detail' product.pk %}">
+        {% if product.image_url %}<img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">{% else %}<div class="image-placeholder">✦</div>{% endif %}
+      </a>
+      <div class="product-info">
+        <a class="product-name" href="{% url 'product_detail' product.pk %}">{{ product.name }}</a>
+        <p class="product-description">{{ product.description|truncatechars:76 }}</p>
+        <div class="product-bottom"><strong>₹{{ product.price }}</strong><a class="small-link" href="{% url 'product_detail' product.pk %}">View details ↗</a></div>
+        {% if product.stock > 0 %}
+        <form method="post" action="{% url 'add_to_cart' product.pk %}">{% csrf_token %}<input type="hidden" name="next" value="home"><button class="add-button" type="submit">+ Add to cart</button></form>
+        {% else %}<button class="add-button disabled" disabled>Out of stock</button>{% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <div class="empty-state"><h3>No products yet</h3><p>Run <code>python manage.py seed_products</code> in your terminal.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}
